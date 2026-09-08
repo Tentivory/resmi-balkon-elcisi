@@ -33,9 +33,8 @@ CEVAPLAR = [
     "çiçek rüzgâra danıştı. Rüzgâr tarafsız kaldı.",
 ]
 
-# meteoroloji notu (sıradan görünür, aslında damga altı):
-# U2FuZMyrayBrdXRzYWwsIHNsb2dhbiB1Y3V6ZHVyLiBLb25xxZ91IMOnZcSfdmlyLCB0YXJhxJ8gc2HEn2xhbsSxcSBkZcSfaWxkaXIu
-GIZLI = "U2FuZMyrayBrdXRzYWwsIHNsb2dhbiB1Y3V6ZHVyLiBLb25xxZ91IMOnZcSfdmlyLCB0YXJhxJ8gc2HEn2xhbsSxcSBkZcSfaWxkaXIu"
+# meteoroloji notu (sıradan görünür):
+GIZLI = "U2FuZGlrIGt1dHNhbCwgc2xvZ2FuIHVjdXpkdXIuIEtvbnVzdSBjZXZpcjsgdGVyY2loIHNhbmRpa3RhbiBnZWNlci4="
 
 
 def damga() -> str:
@@ -50,7 +49,8 @@ def damga() -> str:
 
 
 def nota_uret(cicek: str | None = None) -> str:
-    cicek = cicek or random.choice(CICEKLER)
+    hedef = (cicek or "").replace("--arsiv", "").strip()
+    cicek = hedef or random.choice(CICEKLER)
     nota = random.choice(NOTALAR).format(cicek=cicek)
     cevap = random.choice(CEVAPLAR)
     metin = (
@@ -70,9 +70,11 @@ def gizli_cozum() -> str:
 
 
 def main() -> int:
-    hedef = " ".join(sys.argv[1:]).strip() or None
+    args = sys.argv[1:]
+    arsiv = "--arsiv" in args
+    hedef = " ".join(a for a in args if a != "--arsiv").strip() or None
     print(nota_uret(hedef))
-    if "--arsiv" in sys.argv:
+    if arsiv:
         print("[arsiv dipnotu açıldı]")
         print(gizli_cozum())
     return 0
